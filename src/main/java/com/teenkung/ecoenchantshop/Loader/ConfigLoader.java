@@ -25,7 +25,6 @@ public class ConfigLoader {
 
     public void loadEnchantments() {
         enchantments = new ArrayList<>(EcoEnchants.INSTANCE.values());
-        // Sort the enchantments ArrayList alphabetically by enchantment ID
         enchantments.sort(Comparator.comparing(enchant -> enchant.getEnchantmentKey().getKey()));
     }
 
