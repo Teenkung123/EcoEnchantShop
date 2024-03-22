@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class EnchantmentPrice {
 
@@ -145,4 +146,6 @@ public class EnchantmentPrice {
     public LevelHolder getHolders(EcoEnchant enchantment) {
         return enchantments.getOrDefault(enchantment, null);
     }
+
+    public Set<EcoEnchant> getAvailableEnchantments() { return enchantments.keySet(); }
 }
