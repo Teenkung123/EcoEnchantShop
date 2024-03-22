@@ -1,0 +1,10 @@
+Menu:
+  Main:
+    Title: "EcoEnchant Shop"
+    Filler: BLACK_STAINED_GLASS_PANE
+  Level:
+    Title: "Select Level"
+    Filler: "BLACK_STAINED_GLASS_PANE"
+  Confirm:
+    Title: "Confirm Purchase"
+    Filler: "BLACK_STAINED_GLASS_PANE"

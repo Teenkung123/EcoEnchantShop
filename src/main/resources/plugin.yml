@@ -1,0 +1,7 @@
+name: EcoEnchantShop
+version: '${version}'
+main: com.teenkung.ecoenchantshop.EcoEnchantShop
+api-version: '1.20'
+dependency:
+  - EcoEnchants
+  - eco
