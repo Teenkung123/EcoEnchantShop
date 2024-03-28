@@ -1,4 +1,4 @@
-package com.teenkung.ecoenchantshop.GUI.Holder;
+package com.teenkung.ecoenchantshop.GUI.Wrapper;
 
 import com.willfp.ecoenchants.enchant.EcoEnchant;
 import org.bukkit.inventory.Inventory;
@@ -6,12 +6,12 @@ import org.bukkit.inventory.Inventory;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MainGUIHolder {
+public class MainGUIWrapper {
 
-    private static final Map<Inventory, Map<Integer, EcoEnchant>> inventories = new HashMap<>();
+    private static final Map<Inventory, MainGUIData> inventories = new HashMap<>();
 
     public static void addInventory(Inventory inventory) {
-        inventories.put(inventory, new HashMap<>());
+        inventories.put(inventory, new MainGUIData(new HashMap<>()));
     }
 
     public static void removeInventory(Inventory inventory) {
@@ -24,13 +24,13 @@ public class MainGUIHolder {
 
     public static void addInventoryItems(Inventory inventory, Map<Integer, EcoEnchant> items) {
         if (isMainGUI(inventory)) {
-            inventories.get(inventory).putAll(items);
+            inventories.get(inventory).items().putAll(items);
         }
     }
 
     public static void addInventoryItem(Inventory inventory, Integer slot, EcoEnchant enchantment) {
         if (isMainGUI(inventory)) {
-            inventories.get(inventory).put(slot, enchantment);
+            inventories.get(inventory).items().put(slot, enchantment);
         }
     }
 
