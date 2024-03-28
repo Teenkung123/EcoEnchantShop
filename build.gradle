@@ -19,12 +19,17 @@ repositories {
         name = "ecoenchants"
         url = "https://repo.auxilor.io/repository/maven-public/"
     }
+    maven {
+        name = "codemc-repo"
+        url = "https://repo.codemc.org/repository/maven-public/"
+    }
 }
 
 dependencies {
     compileOnly "io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT"
     compileOnly("com.willfp:EcoEnchants:12.3.5")
     compileOnly("com.willfp:eco:6.69.0")
+    compileOnly 'de.tr7zw:item-nbt-api-plugin:2.12.2'
 }
 
 def targetJavaVersion = 17

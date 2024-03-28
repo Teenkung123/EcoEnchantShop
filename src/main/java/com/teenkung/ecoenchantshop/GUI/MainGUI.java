@@ -2,13 +2,14 @@ package com.teenkung.ecoenchantshop.GUI;
 
 import com.teenkung.ecoenchantshop.EcoEnchantShop;
 import com.teenkung.ecoenchantshop.GUI.Wrapper.MainGUIWrapper;
+import com.willfp.eco.core.gui.slot.Slot;
 import com.willfp.ecoenchants.enchant.EcoEnchant;
-import com.willfp.ecoenchants.enchant.EcoEnchants;
-import com.willfp.ecoenchants.rarity.EnchantmentRarities;
-import com.willfp.ecoenchants.rarity.EnchantmentRarity;
+import com.willfp.ecoenchants.target.EnchantmentTarget;
+import de.tr7zw.nbtapi.NBTItem;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -19,61 +20,41 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 public class MainGUI {
 
     private final EcoEnchantShop plugin;
-    private final Map<Integer, Inventory> inventory = new HashMap<>();
-    private final ArrayList<Integer> freeSlot = new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14, 15, 16, 19, 20, 21, 22, 23, 24, 25, 28, 29, 30, 31, 32, 33, 34));
+
 
     public MainGUI(EcoEnchantShop plugin) {
         this.plugin = plugin;
-        loadGUI();
     }
 
-    public void loadGUI() {
-        int size = plugin.getEnchantmentPrice().getAvailableEnchantments().size();
-        int pages = Double.valueOf(Math.ceil((double) size /21)).intValue();
-        for (int i = 0; i < pages; i++) {
-            Inventory inv = Bukkit.createInventory(null, 45);
-            buildLayout(inv);
-            fillItems(inv, i);
-            MainGUIWrapper.addInventory(inv);
-            inventory.put(i, inv);
-        }
+    public void openInventory(Player player, Integer page) {
+        Inventory inv = Bukkit.createInventory(null, 45);
+        MainGUIWrapper.addInventory(inv, page);
+        createSlots(inv, player, page);
+        player.openInventory(inv);
     }
 
-    private void buildLayout(Inventory inv) {
-        for (int i = 0; i < inv.getSize(); i++) {
-            if (!freeSlot.contains(i)) {
+    private void createSlots(Inventory inv, Player player, Integer page) {
+        int index = page*plugin.getConfigLoader().getFreeSlots().size();
+        for (int i = 0 ; i < inv.getSize() ; i++) {
+            if (plugin.getConfigLoader().getFreeSlots().contains(i)) {
+                if (index + 1 < plugin.getEnchantmentPrice().getAvailableEnchantments().size()) {
+                    inv.setItem(i, createItem(player, new ArrayList<>(plugin.getEnchantmentPrice().getAvailableEnchantments()).get(index)));
+                    index++;
+                }
+            } else {
                 inv.setItem(i, new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
             }
         }
     }
 
-    private void fillItems(Inventory inv, Integer page) {
-        int startIndex = page * 21; // Starting index for enchantments in this page
-        ArrayList<EcoEnchant> enchants = new ArrayList<>(plugin.getEnchantmentPrice().getAvailableEnchantments());
-        for (int i = 0; i < 21; i++) {
-            if (startIndex + i >= enchants.size()) {
-                break; // Break if there are no more enchantments to display
-            }
-            EcoEnchant enchant = enchants.get(startIndex + i);
-            ItemStack itemStack = createItemStack(enchant);
-            if (freeSlot.size() > i) { // Check to avoid IndexOutOfBoundsException for freeSlot
-                int inventoryIndex = freeSlot.get(i); // Get the actual inventory slot to place the item
-                inv.setItem(inventoryIndex, itemStack); // Place the item in the correct slot
-                MainGUIWrapper.addInventoryItem(inv, inventoryIndex, enchant); // Assuming you want to track this for some reason
-            }
-        }
-    }
-
-
-    private ItemStack createItemStack(EcoEnchant enchant) {
-
+    private ItemStack createItem(Player player, EcoEnchant enchant) {
         ArrayList<Component> lores = new ArrayList<>();
+        lores.add(MiniMessage.miniMessage().deserialize("<dark_grey>"+EcoEnchantShop.transformColorCodesToMiniMessage(enchant.getRawDescription(1, player))));
+        lores.add(Component.space());
 
         String rarity = enchant.getEnchantmentRarity().getDisplayName().toLowerCase();
         String rarity_prefix = "<white>Rarity: ";
@@ -101,20 +82,38 @@ public class MainGUI {
                 break;
         }
 
+        lores.add(MiniMessage.miniMessage().deserialize("<white>Max Level: <green>" + enchant.getMaximumLevel()));
+        Component applicable = MiniMessage.miniMessage().deserialize("<white>Applicable to: <green>");
+        for (EnchantmentTarget target : enchant.getTargets()) {
+            applicable = applicable.append(MiniMessage.miniMessage().deserialize(target.getDisplayName() + " "));
+        }
+        lores.add(applicable);
+
+
         if (enchant.getConflictsWithEverything()) {
             // If the enchantment conflicts with everything, add this information directly
-            lores.add(MiniMessage.miniMessage().deserialize("<white>Conflicts with: \n  - Everything"));
+            lores.add(MiniMessage.miniMessage().deserialize("<white>Conflicts with: <red>Every Enchantments"));
         } else if (!enchant.getConflicts().isEmpty()) {
             // Start with the "Conflicts with:" line
-            Component conflictHeader = MiniMessage.miniMessage().deserialize("<gray>Conflicts with:");
+            Component conflictHeader = MiniMessage.miniMessage().deserialize("<white>Conflicts with:");
             lores.add(conflictHeader);
 
             // For each conflict, add it in a new line with a dash
             for (Enchantment conflictEnchant : enchant.getConflicts()) {
-                // Assuming displayName(1) returns a string, adjust if it returns a Component
-                Component conflictLine = MiniMessage.miniMessage().deserialize("<gray>  - ").append(conflictEnchant.displayName(1));
+                String componentAsString = PlainTextComponentSerializer.plainText().serialize(conflictEnchant.displayName(1));
+                componentAsString = componentAsString.replaceAll(" I", "");
+
+                Component conflictLine = MiniMessage.miniMessage().deserialize("<white>  - <gray>" + componentAsString);
                 lores.add(conflictLine);
             }
+        } else {
+            lores.add(MiniMessage.miniMessage().deserialize("<white>Conflicts with: <green>No Conflict"));
+        }
+        lores.add(Component.space());
+        if (enchant.getMaximumLevel() == 1) {
+            lores.add(MiniMessage.miniMessage().deserialize("<white>Price: <yellow>$" + plugin.getEnchantmentPrice().getHolders(enchant).getPrice(1)));
+        } else {
+            lores.add(MiniMessage.miniMessage().deserialize("<white>Price: <yellow>$" + plugin.getEnchantmentPrice().getHolders(enchant).getPrice(1) + " - $" + plugin.getEnchantmentPrice().getHolders(enchant).getPrice(enchant.getMaximumLevel())));
         }
 
         ItemStack stack = new ItemStack(Material.ENCHANTED_BOOK);
@@ -125,16 +124,12 @@ public class MainGUI {
             meta.lore(lores); // Set the lore on the item meta
             stack.setItemMeta(meta);
         }
+        NBTItem nbt = new NBTItem(stack);
+        nbt.setBoolean("eesClickable", true);
+        nbt.setString("eesID", enchant.getID());
+        nbt.applyNBT(stack);
         return stack;
     }
 
-
-    public void openInventory(Player player) {
-        if (inventory.containsKey(0)) {
-            player.openInventory(inventory.get(0));
-        } else {
-            player.sendMessage(MiniMessage.miniMessage().deserialize("<red>Something went wrong! the plugin cannot detect any Main GUI Page!"));
-        }
-    }
 
 }

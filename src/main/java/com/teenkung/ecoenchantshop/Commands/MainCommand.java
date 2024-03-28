@@ -18,7 +18,7 @@ public class MainCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         if (commandSender instanceof Player player) {
-            plugin.getMainGUI().openInventory(player);
+            plugin.getMainGUI().openInventory(player, 0);
         }
 
         return false;
