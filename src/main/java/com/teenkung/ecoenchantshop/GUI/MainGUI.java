@@ -2,12 +2,12 @@ package com.teenkung.ecoenchantshop.GUI;
 
 import com.teenkung.ecoenchantshop.EcoEnchantShop;
 import com.teenkung.ecoenchantshop.GUI.Wrapper.MainGUIWrapper;
-import com.willfp.eco.core.gui.slot.Slot;
+import com.teenkung.ecoenchantshop.Loader.MainMenuConfig;
+import com.teenkung.ecoenchantshop.Utils.Utils;
 import com.willfp.ecoenchants.enchant.EcoEnchant;
 import com.willfp.ecoenchants.target.EnchantmentTarget;
 import de.tr7zw.nbtapi.NBTItem;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
@@ -19,28 +19,28 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class MainGUI {
 
     private final EcoEnchantShop plugin;
-
+    private MainMenuConfig config;
 
     public MainGUI(EcoEnchantShop plugin) {
         this.plugin = plugin;
+        this.config = plugin.getConfigLoader().getMainMenuConfig();
     }
 
     public void openInventory(Player player, Integer page) {
-        Inventory inv = Bukkit.createInventory(null, 45);
+        Inventory inv = Bukkit.createInventory(null, 9*config.getLayout().size(), MiniMessage.miniMessage().deserialize(config.getTitle()));
         MainGUIWrapper.addInventory(inv, page);
         createSlots(inv, player, page);
         player.openInventory(inv);
     }
 
     private void createSlots(Inventory inv, Player player, Integer page) {
-        int index = page*plugin.getConfigLoader().getFreeSlots().size();
+        int index = page*config.getEnchantmentSlots().size();
         for (int i = 0 ; i < inv.getSize() ; i++) {
-            if (plugin.getConfigLoader().getFreeSlots().contains(i)) {
+            if (config.getEnchantmentSlots().contains(i)) {
                 if (index + 1 < plugin.getEnchantmentPrice().getAvailableEnchantments().size()) {
                     inv.setItem(i, createItem(player, new ArrayList<>(plugin.getEnchantmentPrice().getAvailableEnchantments()).get(index)));
                     index++;
@@ -53,7 +53,7 @@ public class MainGUI {
 
     private ItemStack createItem(Player player, EcoEnchant enchant) {
         ArrayList<Component> lores = new ArrayList<>();
-        lores.add(MiniMessage.miniMessage().deserialize("<dark_grey>"+EcoEnchantShop.transformColorCodesToMiniMessage(enchant.getRawDescription(1, player))));
+        lores.add(MiniMessage.miniMessage().deserialize("<dark_grey>"+ Utils.transformLegacyEnchantmentDescription(enchant.getRawDescription(1, player))));
         lores.add(Component.space());
 
         String rarity = enchant.getEnchantmentRarity().getDisplayName().toLowerCase();
