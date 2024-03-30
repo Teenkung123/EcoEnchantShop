@@ -2,6 +2,7 @@ package com.teenkung.ecoenchantshop.GUI;
 
 import com.teenkung.ecoenchantshop.EcoEnchantShop;
 import com.teenkung.ecoenchantshop.GUI.Wrapper.MainGUIWrapper;
+import com.teenkung.ecoenchantshop.Loader.EnchantItemTemplate;
 import com.teenkung.ecoenchantshop.Loader.MainMenuConfig;
 import com.teenkung.ecoenchantshop.Utils.Utils;
 import com.willfp.ecoenchants.enchant.EcoEnchant;
@@ -9,6 +10,7 @@ import com.willfp.ecoenchants.target.EnchantmentTarget;
 import de.tr7zw.nbtapi.NBTItem;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -23,7 +25,7 @@ import java.util.ArrayList;
 public class MainGUI {
 
     private final EcoEnchantShop plugin;
-    private MainMenuConfig config;
+    private final MainMenuConfig config;
 
     public MainGUI(EcoEnchantShop plugin) {
         this.plugin = plugin;
@@ -52,74 +54,75 @@ public class MainGUI {
     }
 
     private ItemStack createItem(Player player, EcoEnchant enchant) {
-        ArrayList<Component> lores = new ArrayList<>();
-        lores.add(MiniMessage.miniMessage().deserialize("<dark_grey>"+ Utils.transformLegacyEnchantmentDescription(enchant.getRawDescription(1, player))));
-        lores.add(Component.space());
+        EnchantItemTemplate templateConfig = plugin.getConfigLoader().getEnchantTemplate();
 
         String rarity = enchant.getEnchantmentRarity().getDisplayName().toLowerCase();
-        String rarity_prefix = "<white>Rarity: ";
-        switch (rarity) {
-            case "very special":
-                lores.add(MiniMessage.miniMessage().deserialize(rarity_prefix + "<light_purple>Very Special"));
-                break;
-            case "special":
-                lores.add(MiniMessage.miniMessage().deserialize(rarity_prefix + "<blue>Special"));
-                break;
-            case "legendary":
-                lores.add(MiniMessage.miniMessage().deserialize(rarity_prefix + "<gold>Legendary"));
-                break;
-            case "epic":
-                lores.add(MiniMessage.miniMessage().deserialize(rarity_prefix + "<light_purple>Epic"));
-                break;
-            case "rare":
-                lores.add(MiniMessage.miniMessage().deserialize(rarity_prefix + "<aqua>Rare"));
-                break;
-            case "common":
-                lores.add(MiniMessage.miniMessage().deserialize(rarity_prefix + "<gray>Common"));
-                break;
-            default:
-                lores.add(MiniMessage.miniMessage().deserialize(rarity_prefix + "<red>Unknown"));
-                break;
-        }
+        rarity = switch (rarity) {
+            case "very special" -> templateConfig.getRarityVerySpecial();
+            case "special" -> templateConfig.getRaritySpecial();
+            case "legendary" -> templateConfig.getRarityLegendary();
+            case "epic" -> templateConfig.getRarityEpic();
+            case "rare" -> templateConfig.getRarityRare();
+            case "common" -> templateConfig.getRarityCommon();
+            default -> "<red>Unknown Rarity";
+        };
 
-        lores.add(MiniMessage.miniMessage().deserialize("<white>Max Level: <green>" + enchant.getMaximumLevel()));
         Component applicable = MiniMessage.miniMessage().deserialize("<white>Applicable to: <green>");
         for (EnchantmentTarget target : enchant.getTargets()) {
             applicable = applicable.append(MiniMessage.miniMessage().deserialize(target.getDisplayName() + " "));
         }
-        lores.add(applicable);
 
-
+        Component conflict = Component.empty();
         if (enchant.getConflictsWithEverything()) {
-            // If the enchantment conflicts with everything, add this information directly
-            lores.add(MiniMessage.miniMessage().deserialize("<white>Conflicts with: <red>Every Enchantments"));
-        } else if (!enchant.getConflicts().isEmpty()) {
-            // Start with the "Conflicts with:" line
-            Component conflictHeader = MiniMessage.miniMessage().deserialize("<white>Conflicts with:");
-            lores.add(conflictHeader);
-
-            // For each conflict, add it in a new line with a dash
+            conflict = MiniMessage.miniMessage().deserialize(templateConfig.getConflictEverything());
+        } else if (enchant.getConflicts().isEmpty()) {
+            conflict = MiniMessage.miniMessage().deserialize(templateConfig.getConflictNone());
+        } else {
             for (Enchantment conflictEnchant : enchant.getConflicts()) {
                 String componentAsString = PlainTextComponentSerializer.plainText().serialize(conflictEnchant.displayName(1));
                 componentAsString = componentAsString.replaceAll(" I", "");
-
-                Component conflictLine = MiniMessage.miniMessage().deserialize("<white>  - <gray>" + componentAsString);
-                lores.add(conflictLine);
+                if (templateConfig.getConflictType().equalsIgnoreCase("VERTICAL")) {
+                    conflict = conflict.append(MiniMessage.miniMessage().deserialize("\n<white>  - <gray>" + componentAsString));
+                } else {
+                    // Check if 'conflict' already has content; if so, prepend a comma and space.
+                    if (!PlainTextComponentSerializer.plainText().serialize(conflict).isEmpty()) {
+                        componentAsString = ", " + componentAsString;
+                    }
+                    conflict = conflict.append(MiniMessage.miniMessage().deserialize(componentAsString));
+                }
             }
-        } else {
-            lores.add(MiniMessage.miniMessage().deserialize("<white>Conflicts with: <green>No Conflict"));
         }
-        lores.add(Component.space());
+
+        Component price;
         if (enchant.getMaximumLevel() == 1) {
-            lores.add(MiniMessage.miniMessage().deserialize("<white>Price: <yellow>$" + plugin.getEnchantmentPrice().getHolders(enchant).getPrice(1)));
+            Component p = MiniMessage.miniMessage().deserialize(String.valueOf(plugin.getEnchantmentPrice().getHolders(enchant).getPrice(1)));
+            price = MiniMessage.miniMessage().deserialize(templateConfig.getPriceSingle(),
+                    Placeholder.component("price", p));
         } else {
-            lores.add(MiniMessage.miniMessage().deserialize("<white>Price: <yellow>$" + plugin.getEnchantmentPrice().getHolders(enchant).getPrice(1) + " - $" + plugin.getEnchantmentPrice().getHolders(enchant).getPrice(enchant.getMaximumLevel())));
+            Component lp = MiniMessage.miniMessage().deserialize(String.valueOf(plugin.getEnchantmentPrice().getHolders(enchant).getPrice(1)));
+            Component mp = MiniMessage.miniMessage().deserialize(String.valueOf(plugin.getEnchantmentPrice().getHolders(enchant).getPrice(enchant.getMaximumLevel())));
+            price = MiniMessage.miniMessage().deserialize(templateConfig.getPriceMultiple(),
+                    Placeholder.component("min_price", lp),
+                    Placeholder.component("max_price", mp));
         }
+
+        ArrayList<Component> lores = new ArrayList<>();
+        for (String lore : templateConfig.getLore()) {
+            lores.add(MiniMessage.miniMessage().deserialize(lore,
+                    Placeholder.component("description", MiniMessage.miniMessage().deserialize("<dark_grey>"+ Utils.transformLegacyEnchantmentDescription(enchant.getRawDescription(1, player)))),
+                    Placeholder.component("rarity", MiniMessage.miniMessage().deserialize(rarity)),
+                    Placeholder.component("max_level", MiniMessage.miniMessage().deserialize(String.valueOf(enchant.getMaximumLevel()))),
+                    Placeholder.component("applicable", applicable),
+                    Placeholder.component("conflicts", conflict),
+                    Placeholder.component("price", price)
+            ));
+        }
+
 
         ItemStack stack = new ItemStack(Material.ENCHANTED_BOOK);
         ItemMeta meta = stack.getItemMeta();
         if (meta != null) {
-            Component display = MiniMessage.miniMessage().deserialize("<i:false>" + enchant.getRawDisplayName());
+            Component display = MiniMessage.miniMessage().deserialize("<i:false>" + MiniMessage.miniMessage().deserialize(templateConfig.getName(), Placeholder.unparsed("name", enchant.getRawDisplayName())));
             meta.displayName(display);
             meta.lore(lores); // Set the lore on the item meta
             stack.setItemMeta(meta);

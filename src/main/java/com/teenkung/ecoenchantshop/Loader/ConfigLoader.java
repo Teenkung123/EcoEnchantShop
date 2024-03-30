@@ -16,6 +16,7 @@ public class ConfigLoader {
     private final FileConfiguration config;
     private ArrayList<EcoEnchant> enchantments = new ArrayList<>();
     private MainMenuConfig mainMenu;
+    private EnchantItemTemplate enchantTemplate;
 
     public ConfigLoader(EcoEnchantShop plugin) {
         this.plugin = plugin;
@@ -35,6 +36,13 @@ public class ConfigLoader {
         } else {
             plugin.getLogger().severe("Could not load Main Menu GUI from configuration!");
         }
+
+        ConfigurationSection enchantTemplateSection = config.getConfigurationSection("ItemTemplate.Enchantment");
+        if (enchantTemplateSection != null) {
+            this.enchantTemplate = new EnchantItemTemplate(plugin, enchantTemplateSection);
+        } else {
+            plugin.getLogger().severe("Could not load ItemTemplate from configuration!");
+        }
     }
 
     public void loadEnchantments() {
@@ -44,4 +52,5 @@ public class ConfigLoader {
 
     public ArrayList<EcoEnchant> getEnchantments() { return enchantments; }
     public MainMenuConfig getMainMenuConfig() { return mainMenu; }
+    public EnchantItemTemplate getEnchantTemplate() { return enchantTemplate; }
 }
