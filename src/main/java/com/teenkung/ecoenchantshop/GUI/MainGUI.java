@@ -3,7 +3,7 @@ package com.teenkung.ecoenchantshop.GUI;
 import com.teenkung.ecoenchantshop.EcoEnchantShop;
 import com.teenkung.ecoenchantshop.GUI.Wrapper.MainGUIWrapper;
 import com.teenkung.ecoenchantshop.Loader.EnchantItemTemplate;
-import com.teenkung.ecoenchantshop.Loader.MainMenuConfig;
+import com.teenkung.ecoenchantshop.Loader.MenuConfig.MainMenuConfig;
 import com.teenkung.ecoenchantshop.Utils.Utils;
 import com.willfp.ecoenchants.enchant.EcoEnchant;
 import com.willfp.ecoenchants.target.EnchantmentTarget;
@@ -40,15 +40,21 @@ public class MainGUI {
     }
 
     private void createSlots(Inventory inv, Player player, Integer page) {
-        int index = page*config.getEnchantmentSlots().size();
-        for (int i = 0 ; i < inv.getSize() ; i++) {
-            if (config.getEnchantmentSlots().contains(i)) {
-                if (index + 1 < plugin.getEnchantmentPrice().getAvailableEnchantments().size()) {
-                    inv.setItem(i, createItem(player, new ArrayList<>(plugin.getEnchantmentPrice().getAvailableEnchantments()).get(index)));
-                    index++;
+        int ench = page*config.getEnchantmentSlots().size();
+        int index = 0;
+        for (String str : config.getLayout()) {
+            for (int i = 0; i < 9; i++) {
+                if (config.getEnchantmentSlots().contains(index) && (ench + 1 < plugin.getEnchantmentPrice().getAvailableEnchantments().size())) {
+                    inv.setItem(index, createItem(player, new ArrayList<>(plugin.getEnchantmentPrice().getAvailableEnchantments()).get(ench)));
+                    ench++;
+                } else {
+                    String c = String.valueOf(str.charAt(i));
+                    ItemStack stack = config.getItemMap().get(c);
+                    if (stack != null) {
+                        inv.setItem(index, stack);
+                    }
                 }
-            } else {
-                inv.setItem(i, new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
+                index++;
             }
         }
     }
@@ -63,11 +69,12 @@ public class MainGUI {
             case "legendary" -> templateConfig.getRarityLegendary();
             case "epic" -> templateConfig.getRarityEpic();
             case "rare" -> templateConfig.getRarityRare();
+            case "uncommon" -> templateConfig.getRarityUncommon();
             case "common" -> templateConfig.getRarityCommon();
             default -> "<red>Unknown Rarity";
         };
 
-        Component applicable = MiniMessage.miniMessage().deserialize("<white>Applicable to: <green>");
+        Component applicable = Component.empty();
         for (EnchantmentTarget target : enchant.getTargets()) {
             applicable = applicable.append(MiniMessage.miniMessage().deserialize(target.getDisplayName() + " "));
         }
@@ -81,15 +88,16 @@ public class MainGUI {
             for (Enchantment conflictEnchant : enchant.getConflicts()) {
                 String componentAsString = PlainTextComponentSerializer.plainText().serialize(conflictEnchant.displayName(1));
                 componentAsString = componentAsString.replaceAll(" I", "");
-                if (templateConfig.getConflictType().equalsIgnoreCase("VERTICAL")) {
-                    conflict = conflict.append(MiniMessage.miniMessage().deserialize("\n<white>  - <gray>" + componentAsString));
-                } else {
-                    // Check if 'conflict' already has content; if so, prepend a comma and space.
-                    if (!PlainTextComponentSerializer.plainText().serialize(conflict).isEmpty()) {
-                        componentAsString = ", " + componentAsString;
-                    }
-                    conflict = conflict.append(MiniMessage.miniMessage().deserialize(componentAsString));
+                //BUG: Component.newLine() does not work as intended.
+                //if (templateConfig.getConflictType().equalsIgnoreCase("VERTICAL")) {
+                //    conflict = conflict.append(MiniMessage.miniMessage().deserialize("<white>  - <gray>" + componentAsString));
+                //} else {
+                // Check if 'conflict' already has content; if so, prepend a comma and space.
+                if (!PlainTextComponentSerializer.plainText().serialize(conflict).isEmpty()) {
+                    componentAsString = ", " + componentAsString;
                 }
+                conflict = conflict.append(MiniMessage.miniMessage().deserialize("<gray>" + componentAsString));
+                //}
             }
         }
 
@@ -122,7 +130,7 @@ public class MainGUI {
         ItemStack stack = new ItemStack(Material.ENCHANTED_BOOK);
         ItemMeta meta = stack.getItemMeta();
         if (meta != null) {
-            Component display = MiniMessage.miniMessage().deserialize("<i:false>" + MiniMessage.miniMessage().deserialize(templateConfig.getName(), Placeholder.unparsed("name", enchant.getRawDisplayName())));
+            Component display = MiniMessage.miniMessage().deserialize("<i:false>" + templateConfig.getName(), Placeholder.unparsed("name", enchant.getRawDisplayName()));
             meta.displayName(display);
             meta.lore(lores); // Set the lore on the item meta
             stack.setItemMeta(meta);

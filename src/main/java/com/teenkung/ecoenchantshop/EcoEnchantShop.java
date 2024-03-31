@@ -1,7 +1,10 @@
 package com.teenkung.ecoenchantshop;
 
 import com.teenkung.ecoenchantshop.Commands.MainCommand;
+import com.teenkung.ecoenchantshop.GUI.ConfirmGUI;
+import com.teenkung.ecoenchantshop.GUI.Handlers.LevelHandler;
 import com.teenkung.ecoenchantshop.GUI.Handlers.MainHandler;
+import com.teenkung.ecoenchantshop.GUI.LevelGUI;
 import com.teenkung.ecoenchantshop.GUI.MainGUI;
 import com.teenkung.ecoenchantshop.Loader.ConfigLoader;
 import com.teenkung.ecoenchantshop.Loader.EnchantmentPrice;
@@ -10,14 +13,15 @@ import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Objects;
 
 public final class EcoEnchantShop extends JavaPlugin {
 
     private ConfigLoader configLoader;
     private EnchantmentPrice enchantmentPrice;
     private MainGUI mainGUI;
+    private LevelGUI levelGUI;
+    private ConfirmGUI confirmGUI;
     private boolean useHDB;
     private HeadDatabaseAPI hdbHook;
 
@@ -32,7 +36,8 @@ public final class EcoEnchantShop extends JavaPlugin {
             reload();
         }
         Bukkit.getPluginManager().registerEvents(new MainHandler(this), this);
-        getCommand("ecoenchantshop").setExecutor(new MainCommand(this));
+        Bukkit.getPluginManager().registerEvents(new LevelHandler(this), this);
+        Objects.requireNonNull(getCommand("ecoenchantshop")).setExecutor(new MainCommand(this));
     }
 
     @Override
@@ -43,6 +48,8 @@ public final class EcoEnchantShop extends JavaPlugin {
     public ConfigLoader getConfigLoader() { return configLoader; }
     public EnchantmentPrice getEnchantmentPrice() { return enchantmentPrice; }
     public MainGUI getMainGUI() { return mainGUI; }
+    public LevelGUI getLevelGUI() { return levelGUI; }
+    public ConfirmGUI getConfirmGUI() { return confirmGUI; }
     public HeadDatabaseAPI getHeadDatabaseAPI() {
         if (!useHDB) { return null; }
         if (hdbHook != null) {
@@ -57,6 +64,8 @@ public final class EcoEnchantShop extends JavaPlugin {
         this.configLoader = new ConfigLoader(this);
         this.enchantmentPrice = new EnchantmentPrice(this);
         this.mainGUI = new MainGUI(this);
+        this.levelGUI = new LevelGUI(this);
+        this.confirmGUI = new ConfirmGUI(this);
         if (this.useHDB) {
             this.hdbHook = new HeadDatabaseAPI();
         }

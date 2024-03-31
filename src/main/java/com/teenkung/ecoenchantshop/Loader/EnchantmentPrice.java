@@ -100,7 +100,7 @@ public class EnchantmentPrice {
         for (String key : section.getKeys(false)) {
             EcoEnchant enchant = EcoEnchants.INSTANCE.getByID(key);
             if (enchant != null && config.getBoolean(key + ".enabled")) {
-                LevelHolder holder = new LevelHolder();
+                LevelHolder holder = new LevelHolder(enchant);
                 ConfigurationSection section2 = config.getConfigurationSection(key);
                 if (section2 != null) {
                     loadEnchantmentLevels(section2, holder, key);

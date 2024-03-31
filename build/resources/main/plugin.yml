@@ -5,6 +5,10 @@ api-version: '1.20'
 dependency:
   - EcoEnchants
   - eco
+  - NBTAPI
+
+softdepend:
+  - HeadDatabase
 
 commands:
   ecoenchantshop:

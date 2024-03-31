@@ -1,14 +1,20 @@
 package com.teenkung.ecoenchantshop.Utils;
 
+import com.willfp.ecoenchants.enchant.EcoEnchant;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+@SuppressWarnings("unused")
 public class LevelHolder {
 
     private final Map<Integer, Double> levels = new HashMap<>();
+    private final EcoEnchant enchant;
 
-    public LevelHolder() {}
+    public LevelHolder(EcoEnchant enchant) {
+        this.enchant = enchant;
+    }
 
     public void addLevel(Integer level, Double price) {
         levels.put(level, price);
@@ -25,5 +31,6 @@ public class LevelHolder {
     public Double getPrice(Integer level) {
         return levels.get(level);
     }
+    public EcoEnchant getEnchant() { return enchant; }
 
 }

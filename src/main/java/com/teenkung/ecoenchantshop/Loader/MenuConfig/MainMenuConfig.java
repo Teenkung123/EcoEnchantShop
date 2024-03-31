@@ -1,4 +1,4 @@
-package com.teenkung.ecoenchantshop.Loader;
+package com.teenkung.ecoenchantshop.Loader.MenuConfig;
 
 import com.teenkung.ecoenchantshop.EcoEnchantShop;
 import com.teenkung.ecoenchantshop.Utils.Utils;
@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MainMenuConfig {
+public class MainMenuConfig implements MenuConfig {
 
     private final String title;
     private final ArrayList<String> layout = new ArrayList<>();
@@ -35,8 +35,11 @@ public class MainMenuConfig {
         this.previousPageSlot.addAll(config.getIntegerList("Layout.PreviousPageSlot"));
     }
 
+    @Override
     public String getTitle() { return title; }
+    @Override
     public ArrayList<String> getLayout() { return layout; }
+    @Override
     public Map<String, ItemStack> getItemMap() { return itemMap; }
     public ArrayList<Integer> getEnchantmentSlots() { return enchantmentSlot; }
     public ArrayList<Integer> getNextPageSlots() { return nextPageSlot; }

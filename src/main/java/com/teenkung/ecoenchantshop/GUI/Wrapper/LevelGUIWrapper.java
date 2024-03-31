@@ -1,16 +1,17 @@
 package com.teenkung.ecoenchantshop.GUI.Wrapper;
 
+import com.willfp.ecoenchants.enchant.EcoEnchant;
 import org.bukkit.inventory.Inventory;
 
 import java.util.HashMap;
 
 @SuppressWarnings("unused")
-public class MainGUIWrapper {
+public class LevelGUIWrapper {
 
-    private static final HashMap<Inventory, Integer> inventories = new HashMap<>();
+    private static final HashMap<Inventory, EcoEnchant> inventories = new HashMap<>();
 
-    public static void addInventory(Inventory inventory, Integer page) {
-        inventories.put(inventory, page);
+    public static void addInventory(Inventory inventory, EcoEnchant enchantment) {
+        inventories.put(inventory, enchantment);
     }
 
     public static void removeInventory(Inventory inventory) {
@@ -25,7 +26,7 @@ public class MainGUIWrapper {
     public static void clearGUIHolder() {
         inventories.clear();
     }
-    public static Integer getPage(Inventory inv) {
+    public static EcoEnchant getPage(Inventory inv) {
         return inventories.getOrDefault(inv, null);
     }
 

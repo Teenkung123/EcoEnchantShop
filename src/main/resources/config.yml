@@ -53,10 +53,50 @@ Menu:
       PreviousPageSlot: [36]
   Level:
     Title: "Select Level"
-    Filler: "BLACK_STAINED_GLASS_PANE"
+    Layout:
+      Index:
+        - BBBBBBBBB
+        - BWWWWWWWB
+        - BWWWWWWWB
+        - BWWWWWWWB
+        - BBBBBBBBB
+      Items:
+        B:
+          Item: BLACK_STAINED_GLASS_PANE
+          Amount: 1
+          Name: ''
+          Lore: []
+          ModelData: 0
+        W:
+          Item: WHITE_STAINED_GLASS_PANE
+          Amount: 1
+          Name: ''
+          Lore: []
+          ModelData: 0
+      LevelSlot: [ 10, 11, 12, 13, 14, 15, 16, 19, 20, 21, 22, 23, 24, 25, 28, 29, 30, 31, 32, 33, 34 ]
   Confirm:
-    Title: "Confirm Purchase"
-    Filler: "BLACK_STAINED_GLASS_PANE"
+    Title: "Order Confirmation"
+    Layout:
+      Index:
+        - BBBBBBBBB
+        - BWWWWWWWB
+        - BBBBBBBBB
+      Items:
+        B:
+          Item: BLACK_STAINED_GLASS_PANE
+          Amount: 1
+          Name: ''
+          Lore: [ ]
+          ModelData: 0
+        W:
+          Item: WHITE_STAINED_GLASS_PANE
+          Amount: 1
+          Name: ''
+          Lore: [ ]
+          ModelData: 0
+      PreviewSlot: 13
+      AcceptSlot: 17
+      DenySlot: 9
 
 ItemTemplate:
   Enchantment:
@@ -72,16 +112,15 @@ ItemTemplate:
       - "<white>Price: <price>"
     Rarity:
       Common: '<gray>Common'
+      Uncommon: '<gray>Uncommon'
       Rare: '<aqua>Rare'
       Epic: '<light_purple>Epic'
       Legendary: '<gold>Legendary'
-      Special: '<light_blue>Special'
+      Special: '<blue>Special'
       VerySpecial: '<rainbow>Very Special</rainbow>'
     Conflicts:
       NoConflicts: '<green>No Conflict'
       Everything: '<red>Every Enchantments'
-      #Display type of conflicts list can be "VERTICAL" or "HORIZONTAL" only, default: VERTICAL
-      DisplayType: VERTICAL
     Price:
       Single: '<yellow>$<price>'
       Multiple: '<yellow>$<min_price> - $<max_price>'

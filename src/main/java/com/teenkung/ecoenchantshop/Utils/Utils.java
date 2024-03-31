@@ -118,7 +118,7 @@ public class Utils {
             // Set item properties from the configuration
             item.setAmount(amount);
             ItemMeta meta = item.getItemMeta();
-            meta.displayName(MiniMessage.miniMessage().deserialize(name));
+            meta.displayName(MiniMessage.miniMessage().deserialize("<i:false>" + name));
             ArrayList<Component> newLore = new ArrayList<>();
             for (String lore : lores) {
                 newLore.add(MiniMessage.miniMessage().deserialize(lore));
