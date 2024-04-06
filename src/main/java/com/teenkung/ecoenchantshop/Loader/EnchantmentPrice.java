@@ -32,7 +32,6 @@ public class EnchantmentPrice {
         if (!enchantmentsFile.exists()) {
             //noinspection ResultOfMethodCallIgnored
             enchantmentsFile.getParentFile().mkdirs();
-            plugin.saveResource("enchantments.yml", false);
             initEnchantmentsConfig(enchantmentsFile);
         }
         this.config = YamlConfiguration.loadConfiguration(enchantmentsFile);

@@ -6,7 +6,8 @@ dependency:
   - EcoEnchants
   - eco
   - NBTAPI
-
+  - Vault
+  -
 softdepend:
   - HeadDatabase
 

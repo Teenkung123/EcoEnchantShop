@@ -33,7 +33,7 @@ public class ConfirmGUI {
 
         public void openInventory(Player player, EcoEnchant enchant, Integer level) {
             Inventory inv = Bukkit.createInventory(null, 9*config.getLayout().size(), MiniMessage.miniMessage().deserialize(config.getTitle(), Placeholder.unparsed("name", enchant.getRawDisplayName())));
-            ConfirmGUIWrapper.addInventory(inv, plugin.getEnchantmentPrice().getHolders(enchant));
+            ConfirmGUIWrapper.addInventory(inv, plugin.getEnchantmentPrice().getHolders(enchant), level);
             createSlots(inv, player, enchant, level);
             player.openInventory(inv);
         }

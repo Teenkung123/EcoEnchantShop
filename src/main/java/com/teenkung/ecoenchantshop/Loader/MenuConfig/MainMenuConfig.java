@@ -17,6 +17,7 @@ public class MainMenuConfig implements MenuConfig {
     private final ArrayList<Integer> enchantmentSlot = new ArrayList<>();
     private final ArrayList<Integer> nextPageSlot = new ArrayList<>();
     private final ArrayList<Integer> previousPageSlot = new ArrayList<>();
+    private final Integer itemSearchSlot;
 
     public MainMenuConfig(EcoEnchantShop plugin, ConfigurationSection config) {
         plugin.getLogger().info("Loading Main Menu GUIs. . .");
@@ -30,9 +31,10 @@ public class MainMenuConfig implements MenuConfig {
                 itemMap.put(key, stack);
             }
         }
-        this.enchantmentSlot.addAll(config.getIntegerList("Layout.EnchantmentSlot"));
-        this.nextPageSlot.addAll(config.getIntegerList("Layout.NextPageSlot"));
-        this.previousPageSlot.addAll(config.getIntegerList("Layout.PreviousPageSlot"));
+        this.enchantmentSlot.addAll(config.getIntegerList("Layout.EnchantmentSlots"));
+        this.nextPageSlot.addAll(config.getIntegerList("Layout.NextPageSlots"));
+        this.previousPageSlot.addAll(config.getIntegerList("Layout.PreviousPageSlots"));
+        this.itemSearchSlot = config.getInt("Layout.ItemSearchSlot");
     }
 
     @Override
@@ -44,5 +46,6 @@ public class MainMenuConfig implements MenuConfig {
     public ArrayList<Integer> getEnchantmentSlots() { return enchantmentSlot; }
     public ArrayList<Integer> getNextPageSlots() { return nextPageSlot; }
     public ArrayList<Integer> getPreviousPageSlots() { return previousPageSlot; }
+    public Integer getItemSearchSlot() { return itemSearchSlot; }
 
 }

@@ -38,7 +38,10 @@ public class ConfigLoader {
         mainMenu = loadMenuConfig("Menu.Main", MainMenuConfig.class);
         levelMenu = loadMenuConfig("Menu.Level", LevelMenuConfig.class);
         confirmMenu = loadMenuConfig("Menu.Confirm", ConfirmMenuConfig.class);
-        enchantTemplate = loadMenuConfig("ItemTemplate.Enchantment", EnchantItemTemplate.class);
+        ConfigurationSection section = plugin.getConfig().getConfigurationSection("ItemTemplate.Enchantment");
+        if (section != null) {
+            enchantTemplate = new EnchantItemTemplate(section);
+        }
     }
 
     private <T> T loadMenuConfig(String path, Class<T> clazz) {
@@ -63,7 +66,7 @@ public class ConfigLoader {
         enchantments.sort(Comparator.comparing(enchant -> enchant.getEnchantmentKey().getKey()));
     }
 
-    public ArrayList<EcoEnchant> getEnchantments() { return enchantments; }
+    protected ArrayList<EcoEnchant> getEnchantments() { return enchantments; }
     public MainMenuConfig getMainMenuConfig() { return mainMenu; }
     public EnchantItemTemplate getEnchantTemplate() { return enchantTemplate; }
 

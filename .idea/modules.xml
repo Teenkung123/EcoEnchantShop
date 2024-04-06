@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/EcoEnchantShop.main.iml" filepath="$PROJECT_DIR$/.idea/modules/EcoEnchantShop.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/IdeaProjects.EcoEnchantShop.main.iml" filepath="$PROJECT_DIR$/.idea/modules/IdeaProjects.EcoEnchantShop.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/com.Teenkung.EcoEnchantShop.main.iml" filepath="$PROJECT_DIR$/.idea/modules/com.Teenkung.EcoEnchantShop.main.iml" />
     </modules>
   </component>

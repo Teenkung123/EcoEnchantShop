@@ -51,6 +51,7 @@ Menu:
       EnchantmentSlot: [10, 11, 12, 13, 14, 15, 16, 19, 20, 21, 22, 23, 24, 25, 28, 29, 30, 31, 32, 33, 34]
       NextPageSlot: [44]
       PreviousPageSlot: [36]
+      ItemSearchSlot: 4
   Level:
     Title: "Select Level"
     Layout:
@@ -73,7 +74,7 @@ Menu:
           Name: ''
           Lore: []
           ModelData: 0
-      LevelSlot: [ 10, 11, 12, 13, 14, 15, 16, 19, 20, 21, 22, 23, 24, 25, 28, 29, 30, 31, 32, 33, 34 ]
+      LevelSlots: [ 10, 11, 12, 13, 14, 15, 16, 19, 20, 21, 22, 23, 24, 25, 28, 29, 30, 31, 32, 33, 34 ]
   Confirm:
     Title: "Order Confirmation"
     Layout:
@@ -94,9 +95,21 @@ Menu:
           Name: ''
           Lore: [ ]
           ModelData: 0
+        N:
+          Item: LIME_WOOL
+          Amount: 1
+          Name: '<green>Confirm Transaction'
+          Lore: [ ]
+          ModelData: 0
+        P:
+          Item: RED_WOOL
+          Amount: 1
+          Name: '<red>Deny Transaction'
+          Lore: [ ]
+          ModelData: 0
       PreviewSlot: 13
-      AcceptSlot: 17
-      DenySlot: 9
+      AcceptSlots: 17
+      DenySlots: 9
 
 ItemTemplate:
   Enchantment:

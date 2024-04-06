@@ -1,0 +1,45 @@
+# Sounds Configuration Guide
+# This configuration file defines sound effects for various user interactions within the plugin's GUI.
+#Each action is associated with a specific sound from the Minecraft sound library, with customizable volume and pitch settings.
+#Reference for available sounds can be found at: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
+
+# Open the Enchanter Menu
+# When a player opens the enchanter menu, the specified sound effect plays.
+# Format: SOUND:VOLUME:PITCH
+OpenMenu:
+  - BLOCK_RESPAWN_ANCHOR_SET_SPAWN:1:1 # Sound for setting spawn point at a respawn anchor, played with default volume and pitch.
+
+# Click Anything
+# This sound is played when a player clicks any clickable element within the GUI.
+Click:
+  - BLOCK_AMETHYST_BLOCK_HIT:1:1 # Sound of hitting an amethyst block, indicating a click action.
+
+# Click Next Page
+# Sound effect for navigating to the next page in paginated menus.
+NextPage:
+  - BLOCK_AMETHYST_BLOCK_HIT:1:1 # Same click sound as a general click, used for consistency.
+
+# Click Previous Page
+# When players navigate to the previous page, this sound is played.
+PreviousPage:
+  - BLOCK_AMETHYST_BLOCK_HIT:1:1 # Utilizes the same click sound for intuitive user experience.
+
+# Buy an Item
+# This sound signifies a successful transaction or item purchase.
+BuyItem:
+  - ENTITY_PLAYER_LEVELUP:1:1 # Mimics the sound of a player leveling up, signaling a successful action.
+
+# Not Enough Funds
+# Played when a player attempts to buy an item without sufficient resources.
+FailedToBuy:
+  - BLOCK_AMETHYST_BLOCK_RESONATE:1:0.1 # A softer, more resonant amethyst sound indicates failure to purchase.
+
+# Place Item in Search Slot
+# Sound for placing an item into a search or filter slot within the GUI.
+SearchItem:
+  - BLOCK_RESPAWN_ANCHOR_CHARGE:1:0.1 # Sound of charging a respawn anchor, with a slightly altered pitch for searching.
+
+# Put Item Out of Search Slot
+# When an item is removed from the search slot, this sound effect is played.
+SearchItemOut:
+  - BLOCK_SCULK_SENSOR_CLICKING_STOP:1:0.1 # The stopping of sculk sensor clicking, indicating item removal.

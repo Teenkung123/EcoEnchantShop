@@ -26,7 +26,7 @@ public class LevelGUIWrapper {
     public static void clearGUIHolder() {
         inventories.clear();
     }
-    public static EcoEnchant getPage(Inventory inv) {
+    public static EcoEnchant getEnchant(Inventory inv) {
         return inventories.getOrDefault(inv, null);
     }
 

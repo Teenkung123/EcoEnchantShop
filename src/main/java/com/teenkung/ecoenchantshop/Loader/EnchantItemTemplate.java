@@ -23,13 +23,13 @@ public class EnchantItemTemplate {
     public EnchantItemTemplate(ConfigurationSection config) {
         this.name = config.getString("Name", "<yellow><name>");
         this.lore.addAll(config.getStringList("Lore"));
-        this.rarityCommon = config.getString("Rarity.Common");
-        this.rarityUncommon = config.getString("Rarity.Uncommon");
-        this.rarityRare = config.getString("Rarity.Rare");
-        this.rarityEpic = config.getString("Rarity.Epic");
-        this.rarityLegendary = config.getString("Rarity.Legendary");
-        this.raritySpecial = config.getString("Rarity.Special");
-        this.rarityVerySpecial = config.getString("Rarity.VerySpecial");
+        this.rarityCommon = config.getString("Rarity.Common", "");
+        this.rarityUncommon = config.getString("Rarity.Uncommon", "");
+        this.rarityRare = config.getString("Rarity.Rare", "");
+        this.rarityEpic = config.getString("Rarity.Epic", "");
+        this.rarityLegendary = config.getString("Rarity.Legendary", "");
+        this.raritySpecial = config.getString("Rarity.Special", "");
+        this.rarityVerySpecial = config.getString("Rarity.VerySpecial", "");
 
         this.conflictNone = config.getString("Conflicts.NoConflicts");
         this.conflictEverything = config.getString("Conflicts.Everything");

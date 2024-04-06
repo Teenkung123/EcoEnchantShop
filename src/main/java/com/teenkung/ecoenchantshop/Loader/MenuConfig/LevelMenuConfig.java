@@ -28,7 +28,7 @@ public class LevelMenuConfig implements MenuConfig {
                 itemMap.put(key, stack);
             }
         }
-        this.slots.addAll(config.getIntegerList("Layout.LevelSlot"));
+        this.slots.addAll(config.getIntegerList("Layout.LevelSlots"));
     }
 
     @Override

@@ -29,6 +29,7 @@ public class LevelHandler implements Listener {
     @EventHandler
     public void onClick(InventoryClickEvent event) {
         if (LevelGUIWrapper.isPluginGUI(event.getInventory())) {
+            event.setCancelled(true);
             if (plugin.getConfigLoader().getLevelMenuConfig().getSlots().contains(event.getSlot())) {
                 if (event.getCurrentItem() != null) {
                     NBTItem nbt = new NBTItem(event.getCurrentItem());
@@ -37,6 +38,7 @@ public class LevelHandler implements Listener {
                         Integer level = nbt.getInteger("eesLevel");
                         EcoEnchant enchant = EcoEnchants.INSTANCE.getByID(id);
                         if (enchant != null) {
+                            plugin.getSoundLoader().playSound((Player) event.getWhoClicked(), "Click");
                             plugin.getConfirmGUI().openInventory((Player) event.getWhoClicked(), enchant, level);
                         }
                     }

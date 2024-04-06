@@ -32,8 +32,8 @@ public class ConfirmMenuConfig implements MenuConfig{
             }
         }
         this.previewSlot = config.getInt("Layout.PreviewSlot");
-        this.acceptSlots.addAll(config.getIntegerList("Layout.AcceptSlot"));
-        this.denySlots.addAll(config.getIntegerList("Layout.DenySlot"));
+        this.acceptSlots.addAll(config.getIntegerList("Layout.AcceptSlots"));
+        this.denySlots.addAll(config.getIntegerList("Layout.DenySlots"));
     }
 
     @Override

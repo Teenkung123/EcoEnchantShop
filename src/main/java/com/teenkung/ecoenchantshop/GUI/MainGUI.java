@@ -20,6 +20,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 
 public class MainGUI {
@@ -32,21 +33,37 @@ public class MainGUI {
         this.config = plugin.getConfigLoader().getMainMenuConfig();
     }
 
-    public void openInventory(Player player, Integer page) {
-        Inventory inv = Bukkit.createInventory(null, 9*config.getLayout().size(), MiniMessage.miniMessage().deserialize(config.getTitle()));
+    public void openInventory(Player player, Integer page, @Nullable ItemStack search) {
+        ArrayList<EcoEnchant> a = new ArrayList<>();
+        if (search != null) {
+            for (EcoEnchant e : plugin.getEnchantmentPrice().getAvailableEnchantments()) {
+                if (e.canEnchantItem(search)) {
+                    a.add(e);
+                }
+            }
+        } else {
+            a.addAll(plugin.getEnchantmentPrice().getAvailableEnchantments());
+        }
+        Inventory inv = Bukkit.createInventory(null, 9*config.getLayout().size(),
+                MiniMessage.miniMessage().deserialize(
+                        config.getTitle(),
+                        Placeholder.unparsed("page", String.valueOf(page+1)),
+                        Placeholder.unparsed("max_page", String.valueOf(Double.valueOf(Math.ceil(Integer.valueOf(a.size()).doubleValue() / config.getEnchantmentSlots().size())).intValue()))
+                )
+        );
         MainGUIWrapper.addInventory(inv, page);
-        createSlots(inv, player, page);
+        createSlots(inv, player, page, search);
         player.openInventory(inv);
     }
 
-    private void createSlots(Inventory inv, Player player, Integer page) {
-        int ench = page*config.getEnchantmentSlots().size();
+    private void createSlots(Inventory inv, Player player, Integer page, ItemStack search) {
+
         int index = 0;
+        ArrayList<EcoEnchant> enchants =  new ArrayList<>(plugin.getEnchantmentPrice().getAvailableEnchantments());
         for (String str : config.getLayout()) {
             for (int i = 0; i < 9; i++) {
-                if (config.getEnchantmentSlots().contains(index) && (ench + 1 < plugin.getEnchantmentPrice().getAvailableEnchantments().size())) {
-                    inv.setItem(index, createItem(player, new ArrayList<>(plugin.getEnchantmentPrice().getAvailableEnchantments()).get(ench)));
-                    ench++;
+                if (index == config.getItemSearchSlot()) {
+                    inv.setItem(index, search);
                 } else {
                     String c = String.valueOf(str.charAt(i));
                     ItemStack stack = config.getItemMap().get(c);
@@ -55,6 +72,33 @@ public class MainGUI {
                     }
                 }
                 index++;
+            }
+        }
+
+        int ench = page*config.getEnchantmentSlots().size();
+        if (search != null) {
+            ArrayList<EcoEnchant> usable = new ArrayList<>();
+            for (EcoEnchant enchant : plugin.getEnchantmentPrice().getAvailableEnchantments()) {
+                if (enchant.canEnchantItem(search)) {
+                    usable.add(enchant);
+                }
+            }
+            for (int i = 1 ; i <= config.getEnchantmentSlots().size() ; i++) {
+                try {
+                    inv.setItem(config.getEnchantmentSlots().get(i - 1), createItem(player, usable.get(ench)));
+                    ench++;
+                } catch (IndexOutOfBoundsException ignored) {
+                    break;
+                }
+            }
+        } else {
+            for (int i = 1 ; i <= config.getEnchantmentSlots().size() ; i++) {
+                try {
+                    inv.setItem(config.getEnchantmentSlots().get(i - 1), createItem(player, enchants.get(ench)));
+                    ench++;
+                } catch (IndexOutOfBoundsException ignored) {
+                    break;
+                }
             }
         }
     }
