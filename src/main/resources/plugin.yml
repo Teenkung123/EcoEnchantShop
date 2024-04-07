@@ -7,7 +7,7 @@ dependency:
   - eco
   - NBTAPI
   - Vault
-  -
+  
 softdepend:
   - HeadDatabase
 

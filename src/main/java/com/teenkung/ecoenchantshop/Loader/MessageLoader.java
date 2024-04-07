@@ -15,6 +15,8 @@ public class MessageLoader {
     private String notEnoughMoney;
     private String boughtItem;
     private String notEnoughInventory;
+    private String reloadMessage;
+    private String reloadedMessage;
 
     public MessageLoader(EcoEnchantShop plugin) {
         this.plugin = plugin;
@@ -29,6 +31,8 @@ public class MessageLoader {
         this.notEnoughMoney = config.getString("NotEnoughMoney", "");
         this.boughtItem = config.getString("BoughtItem", "");
         this.notEnoughInventory = config.getString("NotEnoughInventory", "");
+        this.reloadMessage = config.getString("Reload", "");
+        this.reloadedMessage = config.getString("Reloaded", "");
     }
 
     public String getNoPermission() {
@@ -45,5 +49,13 @@ public class MessageLoader {
 
     public String getNotEnoughInventory() {
         return notEnoughInventory;
+    }
+
+    public String getReloadMessage() {
+        return reloadMessage;
+    }
+
+    public String getReloadedMessage() {
+        return reloadedMessage;
     }
 }

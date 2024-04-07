@@ -15,6 +15,8 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
+
 public class MainHandler implements Listener {
 
     private final EcoEnchantShop plugin;
@@ -40,8 +42,19 @@ public class MainHandler implements Listener {
                 Player player = (Player) event.getWhoClicked();
                 event.setCancelled(true);
                 if (menuConfig.getNextPageSlots().contains(event.getSlot())) {
+                    ItemStack search = inv.getItem(plugin.getConfigLoader().getMainMenuConfig().getItemSearchSlot());
+                    ArrayList<EcoEnchant> a = new ArrayList<>();
+                    if (search != null) {
+                        for (EcoEnchant e : plugin.getEnchantmentPrice().getAvailableEnchantments()) {
+                            if (e.canEnchantItem(search)) {
+                                a.add(e);
+                            }
+                        }
+                    } else {
+                        a.addAll(plugin.getEnchantmentPrice().getAvailableEnchantments());
+                    }
                     int page = MainGUIWrapper.getPage(inv);
-                    int maxPage = Double.valueOf(Math.ceil(plugin.getEnchantmentPrice().getAvailableEnchantments().size() / Integer.valueOf(plugin.getConfigLoader().getMainMenuConfig().getEnchantmentSlots().size()).doubleValue())).intValue() - 1;
+                    int maxPage = Double.valueOf(Math.ceil(Integer.valueOf(a.size()).doubleValue() / plugin.getConfigLoader().getMainMenuConfig().getEnchantmentSlots().size())).intValue() - 1;
                     if (page + 1 <= maxPage) {
                         plugin.getSoundLoader().playSound(player, "NextPage");
                         plugin.getMainGUI().openInventory(player, page + 1, stack);

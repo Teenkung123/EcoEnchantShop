@@ -1,20 +1,27 @@
 package com.teenkung.ecoenchantshop;
 
 import com.teenkung.ecoenchantshop.Commands.MainCommand;
+import com.teenkung.ecoenchantshop.Commands.TabCommand;
 import com.teenkung.ecoenchantshop.GUI.ConfirmGUI;
 import com.teenkung.ecoenchantshop.GUI.Handlers.ConfirmHandler;
 import com.teenkung.ecoenchantshop.GUI.Handlers.LevelHandler;
 import com.teenkung.ecoenchantshop.GUI.Handlers.MainHandler;
 import com.teenkung.ecoenchantshop.GUI.LevelGUI;
 import com.teenkung.ecoenchantshop.GUI.MainGUI;
+import com.teenkung.ecoenchantshop.GUI.Wrapper.ConfirmGUIWrapper;
+import com.teenkung.ecoenchantshop.GUI.Wrapper.LevelGUIWrapper;
+import com.teenkung.ecoenchantshop.GUI.Wrapper.MainGUIWrapper;
 import com.teenkung.ecoenchantshop.Loader.ConfigLoader;
 import com.teenkung.ecoenchantshop.Loader.EnchantmentPrice;
+import com.teenkung.ecoenchantshop.Loader.MenuConfig.MainMenuConfig;
 import com.teenkung.ecoenchantshop.Loader.MessageLoader;
 import com.teenkung.ecoenchantshop.Loader.SoundLoader;
 import com.teenkung.ecoenchantshop.Utils.HeadDatabaseHook;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -33,10 +40,11 @@ public final class EcoEnchantShop extends JavaPlugin {
     private HeadDatabaseAPI hdbHook;
     private Economy econ = null;
 
+    @SuppressWarnings("DataFlowIssue")
     @Override
     public void onEnable() {
         if (!setupEconomy() ) {
-            getLogger().severe("Could not setup economy!");
+            getLogger().severe("Could not detect Vault as dependencies, disabling plugin.");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
@@ -51,12 +59,22 @@ public final class EcoEnchantShop extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new MainHandler(this), this);
         Bukkit.getPluginManager().registerEvents(new LevelHandler(this), this);
         Bukkit.getPluginManager().registerEvents(new ConfirmHandler(this), this);
-        Objects.requireNonNull(getCommand("ecoenchantshop")).setExecutor(new MainCommand(this));
+        getCommand("ecoenchantshop").setExecutor(new MainCommand(this));
+        getCommand("ecoenchantshop").setTabCompleter(new TabCommand());
     }
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            Inventory inv = player.getOpenInventory().getTopInventory();
+            if (MainGUIWrapper.isPluginGUI(inv)) {
+                player.closeInventory();
+            } else if (LevelGUIWrapper.isPluginGUI(inv)) {
+                player.closeInventory();
+            } else if (ConfirmGUIWrapper.isPluginGUI(inv)) {
+                player.closeInventory();
+            }
+        }
     }
 
     public ConfigLoader getConfigLoader() { return configLoader; }

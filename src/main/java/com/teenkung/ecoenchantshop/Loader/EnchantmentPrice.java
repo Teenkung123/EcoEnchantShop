@@ -29,13 +29,14 @@ public class EnchantmentPrice {
     public EnchantmentPrice(EcoEnchantShop plugin) {
         this.plugin = plugin;
         File enchantmentsFile = new File(plugin.getDataFolder(), "enchantments.yml");
+        this.config = YamlConfiguration.loadConfiguration(enchantmentsFile);
         if (!enchantmentsFile.exists()) {
             //noinspection ResultOfMethodCallIgnored
             enchantmentsFile.getParentFile().mkdirs();
             initEnchantmentsConfig(enchantmentsFile);
+        } else {
+            loadEnchantments();
         }
-        this.config = YamlConfiguration.loadConfiguration(enchantmentsFile);
-        loadEnchantments();
     }
 
     /**
@@ -55,6 +56,7 @@ public class EnchantmentPrice {
             }
         }
         saveConfig(enchantmentsFile);
+        loadEnchantments();
     }
 
     /**
