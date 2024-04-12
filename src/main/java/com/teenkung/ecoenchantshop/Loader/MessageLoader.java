@@ -8,8 +8,6 @@ import java.io.File;
 
 public class MessageLoader {
 
-    @SuppressWarnings("FieldCanBeLocal")
-    private final EcoEnchantShop plugin;
     private final FileConfiguration config;
     private String noPermission;
     private String notEnoughMoney;
@@ -19,9 +17,10 @@ public class MessageLoader {
     private String reloadedMessage;
 
     public MessageLoader(EcoEnchantShop plugin) {
-        this.plugin = plugin;
-        plugin.saveResource("messages.yml", false);
         File messageFile = new File(plugin.getDataFolder(), "messages.yml");
+        if (!messageFile.exists()) {
+            plugin.saveResource("messages.yml", false);
+        }
         this.config = YamlConfiguration.loadConfiguration(messageFile);
         loadMessages();
     }

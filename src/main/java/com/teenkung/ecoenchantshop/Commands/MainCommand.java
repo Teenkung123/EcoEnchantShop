@@ -6,6 +6,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -44,6 +45,18 @@ public class MainCommand implements CommandExecutor {
                 openInventory(player);
             }
 
+        } else {
+            if (commandSender instanceof ConsoleCommandSender) {
+                long ms = System.currentTimeMillis();
+                commandSender.sendMessage(MiniMessage.miniMessage().deserialize(
+                        plugin.getMessageLoader().getReloadMessage()
+                ));
+                plugin.reload();
+                commandSender.sendMessage(MiniMessage.miniMessage().deserialize(
+                        plugin.getMessageLoader().getReloadedMessage(),
+                        Placeholder.unparsed("ms", String.valueOf(System.currentTimeMillis() - ms))
+                ));
+            }
         }
 
         return false;

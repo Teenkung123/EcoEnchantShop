@@ -13,7 +13,6 @@ import com.teenkung.ecoenchantshop.GUI.Wrapper.LevelGUIWrapper;
 import com.teenkung.ecoenchantshop.GUI.Wrapper.MainGUIWrapper;
 import com.teenkung.ecoenchantshop.Loader.ConfigLoader;
 import com.teenkung.ecoenchantshop.Loader.EnchantmentPrice;
-import com.teenkung.ecoenchantshop.Loader.MenuConfig.MainMenuConfig;
 import com.teenkung.ecoenchantshop.Loader.MessageLoader;
 import com.teenkung.ecoenchantshop.Loader.SoundLoader;
 import com.teenkung.ecoenchantshop.Utils.HeadDatabaseHook;
@@ -24,8 +23,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.Objects;
 
 public final class EcoEnchantShop extends JavaPlugin {
 
@@ -97,15 +94,15 @@ public final class EcoEnchantShop extends JavaPlugin {
 
     public void reload() {
         this.configLoader = new ConfigLoader(this);
-        this.messageLoader = new MessageLoader(this);
-        this.soundLoader = new SoundLoader(this);
-        this.enchantmentPrice = new EnchantmentPrice(this);
-        this.mainGUI = new MainGUI(this);
-        this.levelGUI = new LevelGUI(this);
-        this.confirmGUI = new ConfirmGUI(this);
         if (this.useHDB) {
             this.hdbHook = new HeadDatabaseAPI();
         }
+        this.mainGUI = new MainGUI(this);
+        this.levelGUI = new LevelGUI(this);
+        this.confirmGUI = new ConfirmGUI(this);
+        this.messageLoader = new MessageLoader(this);
+        this.soundLoader = new SoundLoader(this);
+        this.enchantmentPrice = new EnchantmentPrice(this);
     }
 
     private boolean setupEconomy() {

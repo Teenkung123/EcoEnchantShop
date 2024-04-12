@@ -16,10 +16,12 @@ public class SoundLoader {
 
     public SoundLoader(EcoEnchantShop plugin) {
         this.plugin = plugin;
-        // Ensures the sounds.yml file is created from the resources if it doesn't exist.
-        plugin.saveResource("sounds.yml", false);
         // Load the sounds.yml file.
         File soundFile = new File(plugin.getDataFolder(), "sounds.yml");
+        if (!soundFile.exists()) {
+            // Ensures the sounds.yml file is created from the resources if it doesn't exist.
+            plugin.saveResource("sounds.yml", false);
+        }
         this.config = YamlConfiguration.loadConfiguration(soundFile);
     }
 

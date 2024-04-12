@@ -2,7 +2,6 @@ package com.teenkung.ecoenchantshop.Loader.MenuConfig;
 
 import com.teenkung.ecoenchantshop.EcoEnchantShop;
 import com.teenkung.ecoenchantshop.Utils.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
@@ -10,7 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MainMenuConfig implements MenuConfig {
+public class MainMenuConfig {
 
     private final String title;
     private final ArrayList<String> layout = new ArrayList<>();
@@ -38,11 +37,8 @@ public class MainMenuConfig implements MenuConfig {
         this.itemSearchSlot = config.getInt("Layout.ItemSearchSlot");
     }
 
-    @Override
     public String getTitle() { return title; }
-    @Override
     public ArrayList<String> getLayout() { return layout; }
-    @Override
     public Map<String, ItemStack> getItemMap() { return itemMap; }
     public ArrayList<Integer> getEnchantmentSlots() { return enchantmentSlot; }
     public ArrayList<Integer> getNextPageSlots() { return nextPageSlot; }

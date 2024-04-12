@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LevelMenuConfig implements MenuConfig {
+public class LevelMenuConfig {
 
     private final String title;
     private final ArrayList<String> layout = new ArrayList<>();
@@ -31,21 +31,15 @@ public class LevelMenuConfig implements MenuConfig {
         this.slots.addAll(config.getIntegerList("Layout.LevelSlots"));
     }
 
-    @Override
     public String getTitle() {
         return title;
     }
-
-    @Override
     public ArrayList<String> getLayout() {
         return layout;
     }
-
-    @Override
     public Map<String, ItemStack> getItemMap() {
         return itemMap;
     }
-
     public ArrayList<Integer> getSlots() {
         return slots;
     }

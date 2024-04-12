@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @SuppressWarnings({"unused"})
-public class ConfirmMenuConfig implements MenuConfig{
+public class ConfirmMenuConfig{
 
     private final String title;
     private final ArrayList<String> layout = new ArrayList<>();
@@ -36,21 +36,15 @@ public class ConfirmMenuConfig implements MenuConfig{
         this.denySlots.addAll(config.getIntegerList("Layout.DenySlots"));
     }
 
-    @Override
     public String getTitle() {
         return title;
     }
-
-    @Override
     public ArrayList<String> getLayout() {
         return layout;
     }
-
-    @Override
     public Map<String, ItemStack> getItemMap() {
         return itemMap;
     }
-
     public Integer getPreviewSlot() { return previewSlot; }
     public ArrayList<Integer> getAcceptSlots() { return acceptSlots; }
     public ArrayList<Integer> getDenySlots() { return denySlots; }

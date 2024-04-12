@@ -1,8 +1,9 @@
 Menu:
   Main:
-    Title: "EcoEnchant Shop"
+    Title: "EcoEnchant Shop <page>/<max_page>"
     Layout:
       Index:
+        - BBBBBBBBB
         - BBBBBBBBB
         - BWWWWWWWB
         - BWWWWWWWB
@@ -33,24 +34,25 @@ Menu:
           Name: '<red>Previous Page'
           Lore: []
           ModelData: 0
-        #EXAMPLE CASE FOR HEADS
-        #H:
+          #EXAMPLE CASE FOR HEADS
+          #H:
           #Item: PLAYER_HEAD
           #Amount: 1
           #Name: ''
           #Lore: []
           #ModelData: 0
           #HeadValue: YOUR_HEAD_VALUE
-        #D
+          #D
           #Item: HeadDatabase
           #Amount: 1
           #Name: ''
           #Lore: []
           #ModelData: 0
           #HeadDatabase: HDB_ID
-      EnchantmentSlot: [10, 11, 12, 13, 14, 15, 16, 19, 20, 21, 22, 23, 24, 25, 28, 29, 30, 31, 32, 33, 34]
-      NextPageSlot: [44]
-      PreviousPageSlot: [36]
+      EnchantmentSlots: [19, 20, 21, 22, 23, 24, 25, 28, 29, 30, 31, 32, 33, 34, 37, 38, 39, 40, 41, 42, 43]
+      NextPageSlots: [53]
+      PreviousPageSlots: [45]
+      BackSlots: [ 49 ]
       ItemSearchSlot: 4
   Level:
     Title: "Select Level"
@@ -80,7 +82,7 @@ Menu:
     Layout:
       Index:
         - BBBBBBBBB
-        - BWWWWWWWB
+        - BPWWWWWNB
         - BBBBBBBBB
       Items:
         B:
@@ -108,8 +110,8 @@ Menu:
           Lore: [ ]
           ModelData: 0
       PreviewSlot: 13
-      AcceptSlots: 17
-      DenySlots: 9
+      AcceptSlots: [ 16 ]
+      DenySlots: [ 10 ]
 
 ItemTemplate:
   Enchantment:

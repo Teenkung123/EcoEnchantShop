@@ -2,7 +2,6 @@ package com.teenkung.ecoenchantshop.Utils;
 
 import com.teenkung.ecoenchantshop.EcoEnchantShop;
 import me.arcaniax.hdb.api.DatabaseLoadEvent;
-import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 

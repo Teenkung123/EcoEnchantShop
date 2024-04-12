@@ -9,64 +9,47 @@ import com.willfp.ecoenchants.enchant.EcoEnchants;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Comparator;
 
 public class ConfigLoader {
 
-    private final EcoEnchantShop plugin;
-    private ArrayList<EcoEnchant> enchantments = new ArrayList<>();
     private MainMenuConfig mainMenu;
+    private final ArrayList<EcoEnchant> enchantments;
     private LevelMenuConfig levelMenu;
     private ConfirmMenuConfig confirmMenu;
     private EnchantItemTemplate enchantTemplate;
 
     public ConfigLoader(EcoEnchantShop plugin) {
-        this.plugin = plugin;
-        FileConfiguration config = plugin.getConfig();
-        config.options().copyDefaults(true);
         plugin.saveDefaultConfig();
+        FileConfiguration config = plugin.getConfig();
         plugin.getLogger().info("Loading configuration. . .");
-        loadConfigs();
-        loadEnchantments();
+        ConfigurationSection section = config.getConfigurationSection("ItemTemplate.Enchantment");
+        if (section != null) {
+            enchantTemplate = new EnchantItemTemplate(section);
+            plugin.getLogger().info("enchantmentTemplate loaded.");
+        }
+        ConfigurationSection mainSection = config.getConfigurationSection("Menu.Main");
+        if (mainSection != null) {
+            mainMenu = new MainMenuConfig(plugin, mainSection);
+            plugin.getLogger().info("mainMenu loaded.");
+        }
+        ConfigurationSection levelSection = config.getConfigurationSection("Menu.Level");
+        if (levelSection != null) {
+            levelMenu = new LevelMenuConfig(plugin, levelSection);
+            plugin.getLogger().info("levelMenu loaded.");
+        }
+        ConfigurationSection confirmSection = config.getConfigurationSection("Menu.Confirm");
+        if (confirmSection != null) {
+            confirmMenu = new ConfirmMenuConfig(plugin, confirmSection);
+            plugin.getLogger().info("confirmMenu loaded.");
+        }
+        enchantments = new ArrayList<>(EcoEnchants.INSTANCE.values());
+        enchantments.sort(Comparator.comparing(enchant -> enchant.getEnchantmentKey().getKey()));
         plugin.getLogger().info("Configuration loaded!");
     }
 
-    public void loadConfigs() {
-        // Load each menu using the new generic method
-        mainMenu = loadMenuConfig("Menu.Main", MainMenuConfig.class);
-        levelMenu = loadMenuConfig("Menu.Level", LevelMenuConfig.class);
-        confirmMenu = loadMenuConfig("Menu.Confirm", ConfirmMenuConfig.class);
-        ConfigurationSection section = plugin.getConfig().getConfigurationSection("ItemTemplate.Enchantment");
-        if (section != null) {
-            enchantTemplate = new EnchantItemTemplate(section);
-        }
-    }
-
-    private <T> T loadMenuConfig(String path, Class<T> clazz) {
-        ConfigurationSection section = plugin.getConfig().getConfigurationSection(path);
-        if (section == null) {
-            plugin.getLogger().severe("Could not load " + path + " from configuration!");
-            return null;
-        }
-
-        try {
-            // Assuming each menu config class has a constructor that takes (EcoEnchantShop, ConfigurationSection)
-            Constructor<T> constructor = clazz.getConstructor(EcoEnchantShop.class, ConfigurationSection.class);
-            return constructor.newInstance(plugin, section);
-        } catch (Exception e) {
-            plugin.getLogger().severe("Error instantiating " + clazz.getSimpleName() + ": " + e.getMessage());
-            return null;
-        }
-    }
-
-    public void loadEnchantments() {
-        enchantments = new ArrayList<>(EcoEnchants.INSTANCE.values());
-        enchantments.sort(Comparator.comparing(enchant -> enchant.getEnchantmentKey().getKey()));
-    }
-
-    protected ArrayList<EcoEnchant> getEnchantments() { return enchantments; }
+    public ArrayList<EcoEnchant> getEnchantments() { return enchantments; }
     public MainMenuConfig getMainMenuConfig() { return mainMenu; }
     public EnchantItemTemplate getEnchantTemplate() { return enchantTemplate; }
 
