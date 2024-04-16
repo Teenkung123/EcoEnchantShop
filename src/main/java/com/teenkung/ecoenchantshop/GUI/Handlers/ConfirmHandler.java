@@ -44,7 +44,6 @@ public class ConfirmHandler implements Listener {
                     if (player.getInventory().firstEmpty() != -1) {
                         economy.withdrawPlayer(player, price);
                         player.getInventory().addItem(stack);
-                        player.closeInventory();
                         plugin.getSoundLoader().playSound(player, "BuyItem");
                         player.sendMessage(
                                 MiniMessage.miniMessage().deserialize(
@@ -55,6 +54,8 @@ public class ConfirmHandler implements Listener {
                                         Placeholder.unparsed("amount", String.valueOf(1))
                                 )
                         );
+                        ConfirmGUIWrapper.removeInventory(event.getClickedInventory());
+                        plugin.getMainGUI().openInventory(player, 0, null);
                     } else {
                         plugin.getSoundLoader().playSound(player, "FailedToBuy");
                         player.sendMessage(MiniMessage.miniMessage().deserialize(plugin.getMessageLoader().getNotEnoughInventory()));
