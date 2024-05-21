@@ -31,9 +31,9 @@ public class ConfirmGUI {
             this.config = plugin.getConfigLoader().getConfirmMenuConfig();
         }
 
-        public void openInventory(Player player, EcoEnchant enchant, Integer level) {
+        public void openInventory(Player player, EcoEnchant enchant, Integer level, ItemStack search) {
             Inventory inv = Bukkit.createInventory(null, 9*config.getLayout().size(), MiniMessage.miniMessage().deserialize(config.getTitle(), Placeholder.unparsed("name", enchant.getRawDisplayName())));
-            ConfirmGUIWrapper.addInventory(inv, plugin.getEnchantmentPrice().getHolders(enchant), level);
+            ConfirmGUIWrapper.addInventory(inv, plugin.getEnchantmentPrice().getHolders(enchant), level, search);
             createSlots(inv, player, enchant, level);
             player.openInventory(inv);
         }

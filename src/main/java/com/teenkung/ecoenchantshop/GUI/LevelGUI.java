@@ -4,6 +4,7 @@ import com.teenkung.ecoenchantshop.EcoEnchantShop;
 import com.teenkung.ecoenchantshop.GUI.Wrapper.LevelGUIWrapper;
 import com.teenkung.ecoenchantshop.Loader.EnchantItemTemplate;
 import com.teenkung.ecoenchantshop.Loader.MenuConfig.LevelMenuConfig;
+import com.teenkung.ecoenchantshop.Utils.RomanNumeralsConverter;
 import com.teenkung.ecoenchantshop.Utils.Utils;
 import com.willfp.ecoenchants.enchant.EcoEnchant;
 import com.willfp.ecoenchants.target.EnchantmentTarget;
@@ -32,9 +33,9 @@ public class LevelGUI {
         this.config = plugin.getConfigLoader().getLevelMenuConfig();
     }
 
-    public void openInventory(Player player, EcoEnchant enchant) {
+    public void openInventory(Player player, EcoEnchant enchant, ItemStack search) {
         Inventory inv = Bukkit.createInventory(null, 9*config.getLayout().size(), MiniMessage.miniMessage().deserialize(config.getTitle(), Placeholder.unparsed("name", enchant.getRawDisplayName())));
-        LevelGUIWrapper.addInventory(inv, enchant);
+        LevelGUIWrapper.addInventory(inv, enchant, search);
         createSlots(inv, player, enchant);
         player.openInventory(inv);
     }
@@ -116,7 +117,7 @@ public class LevelGUI {
         ItemStack stack = new ItemStack(Material.ENCHANTED_BOOK);
         ItemMeta meta = stack.getItemMeta();
         if (meta != null) {
-            Component display = MiniMessage.miniMessage().deserialize("<i:false>" + templateConfig.getName(), Placeholder.unparsed("name", enchant.getRawDisplayName()));
+            Component display = MiniMessage.miniMessage().deserialize("<i:false>" + templateConfig.getName(), Placeholder.unparsed("name", enchant.getRawDisplayName() + " " + RomanNumeralsConverter.toRoman(level)));
             meta.displayName(display);
             meta.lore(lores); // Set the lore on the item meta
             stack.setItemMeta(meta);

@@ -6,6 +6,8 @@ import com.teenkung.ecoenchantshop.Loader.MenuConfig.MainMenuConfig;
 import com.willfp.ecoenchants.enchant.EcoEnchant;
 import com.willfp.ecoenchants.enchant.EcoEnchants;
 import de.tr7zw.nbtapi.NBTItem;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,7 +21,7 @@ import java.util.ArrayList;
 public class MainHandler implements Listener {
 
     private final EcoEnchantShop plugin;
-
+    private boolean give = true;
     public MainHandler(EcoEnchantShop plugin) {
         this.plugin = plugin;
     }
@@ -27,6 +29,11 @@ public class MainHandler implements Listener {
     @EventHandler
     public void onClose(InventoryCloseEvent event) {
         if (MainGUIWrapper.isPluginGUI(event.getInventory())) {
+            MainMenuConfig menuConfig = plugin.getConfigLoader().getMainMenuConfig();
+            ItemStack ret = event.getInventory().getItem(menuConfig.getItemSearchSlot());
+            if (ret != null && give) {
+                event.getPlayer().getInventory().addItem(ret);
+            }
             MainGUIWrapper.removeInventory(event.getInventory());
         }
     }
@@ -56,13 +63,17 @@ public class MainHandler implements Listener {
                     int maxPage = Double.valueOf(Math.ceil(Integer.valueOf(a.size()).doubleValue() / plugin.getConfigLoader().getMainMenuConfig().getEnchantmentSlots().size())).intValue() - 1;
                     if (page + 1 <= maxPage) {
                         plugin.getSoundLoader().playSound(player, "NextPage");
+                        give = false;
                         plugin.getMainGUI().openInventory(player, page + 1, stack);
+                        give = true;
                     }
                 } else if (menuConfig.getPreviousPageSlots().contains(event.getSlot())) {
                     int page = MainGUIWrapper.getPage(inv);
                     if (page > 0) {
                         plugin.getSoundLoader().playSound(player, "PreviousPage");
+                        give = false;
                         plugin.getMainGUI().openInventory(player, page - 1, stack);
+                        give = true;
                     }
                 } else if (menuConfig.getEnchantmentSlots().contains(event.getSlot())) {
                     if (event.getCurrentItem() != null) {
@@ -72,13 +83,17 @@ public class MainHandler implements Listener {
                             EcoEnchant enchant = EcoEnchants.INSTANCE.getByID(id);
                             if (enchant != null) {
                                 plugin.getSoundLoader().playSound(player, "Click");
-                                plugin.getLevelGUI().openInventory(player, enchant);
+                                give = false;
+                                plugin.getLevelGUI().openInventory(player, enchant, event.getClickedInventory().getItem(menuConfig.getItemSearchSlot()));
+                                give = true;
                             }
                         }
                     }
                 } else if (menuConfig.getItemSearchSlot() == event.getSlot()) {
-                    plugin.getSoundLoader().playSound(player, "SearchItemOut");
-                    plugin.getMainGUI().openInventory(player, 0, null);
+                    if (event.getCurrentItem() != null) {
+                        plugin.getSoundLoader().playSound(player, "SearchItemOut");
+                        plugin.getMainGUI().openInventory(player, 0, null);
+                    }
                 }
             } else if (MainGUIWrapper.isPluginGUI(event.getWhoClicked().getOpenInventory().getTopInventory())) {
                 event.setCancelled(true);
@@ -87,7 +102,10 @@ public class MainHandler implements Listener {
                 int page = MainGUIWrapper.getPage(inv);
                 if (event.getCurrentItem() != null) {
                     plugin.getSoundLoader().playSound(player, "SearchItem");
+                    give = false;
                     plugin.getMainGUI().openInventory(player, page, event.getCurrentItem());
+                    give = true;
+                    event.getClickedInventory().setItem(event.getSlot(), new ItemStack(Material.AIR));
                 }
             }
         }

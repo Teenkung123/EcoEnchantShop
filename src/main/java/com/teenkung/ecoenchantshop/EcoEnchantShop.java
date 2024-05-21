@@ -33,8 +33,12 @@ public final class EcoEnchantShop extends JavaPlugin {
     private MainGUI mainGUI;
     private LevelGUI levelGUI;
     private ConfirmGUI confirmGUI;
-    private boolean useHDB;
+
     private HeadDatabaseAPI hdbHook;
+    private boolean hasEcoEnchants;
+    private boolean hasAdvancedEnchantments;
+    private boolean hasHDB;
+
     private Economy econ = null;
 
     @SuppressWarnings("DataFlowIssue")
@@ -46,11 +50,11 @@ public final class EcoEnchantShop extends JavaPlugin {
             return;
         }
         if (Bukkit.getPluginManager().isPluginEnabled("HeadDatabase")) {
-            this.useHDB = true;
+            this.hasHDB = true;
             getLogger().info("HeadDatabase plugin detected! waiting for database load event. . .");
             Bukkit.getPluginManager().registerEvents(new HeadDatabaseHook(this), this);
         } else {
-            this.useHDB = false;
+            this.hasHDB = false;
             reload();
         }
         Bukkit.getPluginManager().registerEvents(new MainHandler(this), this);
@@ -83,7 +87,7 @@ public final class EcoEnchantShop extends JavaPlugin {
     public MessageLoader getMessageLoader() { return messageLoader; }
     public Economy getEconomy() { return econ; }
     public HeadDatabaseAPI getHeadDatabaseAPI() {
-        if (!useHDB) { return null; }
+        if (!hasHDB) { return null; }
         if (hdbHook != null) {
             return hdbHook;
         } else {
@@ -94,7 +98,7 @@ public final class EcoEnchantShop extends JavaPlugin {
 
     public void reload() {
         this.configLoader = new ConfigLoader(this);
-        if (this.useHDB) {
+        if (this.hasHDB) {
             this.hdbHook = new HeadDatabaseAPI();
         }
         this.mainGUI = new MainGUI(this);

@@ -1,3 +1,8 @@
+Options:
+  Integration:
+    EcoEnchants: false
+    AdvancedEnchants: false
+
 Menu:
   Main:
     Title: "EcoEnchant Shop <page>/<max_page>"
