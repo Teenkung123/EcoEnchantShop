@@ -1,3 +1,7 @@
+Options:
+  Integrations:
+    EnchantmentSlots: false
+
 Menu:
   Main:
     Title: "EcoEnchant Shop <page>/<max_page>"

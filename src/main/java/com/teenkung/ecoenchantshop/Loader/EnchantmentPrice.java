@@ -1,7 +1,6 @@
 package com.teenkung.ecoenchantshop.Loader;
 
 import com.teenkung.ecoenchantshop.EcoEnchantShop;
-import com.teenkung.ecoenchantshop.EnchantElement;
 import com.teenkung.ecoenchantshop.Utils.LevelHolder;
 import com.willfp.ecoenchants.enchant.EcoEnchant;
 import com.willfp.ecoenchants.enchant.EcoEnchants;
@@ -19,7 +18,7 @@ public class EnchantmentPrice {
 
     private final EcoEnchantShop plugin;
     private final FileConfiguration config;
-    private Map<EnchantElement, LevelHolder> enchantments;
+    private Map<EcoEnchant, LevelHolder> enchantments;
 
     /**
      * Constructor for EnchantmentPrice.
@@ -149,7 +148,7 @@ public class EnchantmentPrice {
         return enchantments.getOrDefault(enchantment, null);
     }
 
-    public Set<EnchantElement> getAvailableEnchantments() {
-        return null;
+    public Set<EcoEnchant> getAvailableEnchantments() {
+        return enchantments.keySet();
     }
 }

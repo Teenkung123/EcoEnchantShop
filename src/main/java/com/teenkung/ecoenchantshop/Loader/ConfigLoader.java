@@ -6,6 +6,7 @@ import com.teenkung.ecoenchantshop.Loader.MenuConfig.LevelMenuConfig;
 import com.teenkung.ecoenchantshop.Loader.MenuConfig.MainMenuConfig;
 import com.willfp.ecoenchants.enchant.EcoEnchant;
 import com.willfp.ecoenchants.enchant.EcoEnchants;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -19,11 +20,17 @@ public class ConfigLoader {
     private LevelMenuConfig levelMenu;
     private ConfirmMenuConfig confirmMenu;
     private EnchantItemTemplate enchantTemplate;
+    private boolean enchantmentSlotsIntegration;
 
     public ConfigLoader(EcoEnchantShop plugin) {
         plugin.saveDefaultConfig();
         FileConfiguration config = plugin.getConfig();
         plugin.getLogger().info("Loading configuration. . .");
+        this.enchantmentSlotsIntegration = config.getBoolean("Options.Integrations.EnchantmentSlots", false);
+        if (!Bukkit.getPluginManager().isPluginEnabled("EnchantmentSlots") && this.enchantmentSlotsIntegration) {
+            plugin.getLogger().warning("The Integration for EnchantmentSlots is enabled. but couldn't find the plugin itself. Disabling the Integration.");
+            this.enchantmentSlotsIntegration = false;
+        }
         ConfigurationSection section = config.getConfigurationSection("ItemTemplate.Enchantment");
         if (section != null) {
             enchantTemplate = new EnchantItemTemplate(section);
@@ -52,6 +59,7 @@ public class ConfigLoader {
     public ArrayList<EcoEnchant> getEnchantments() { return enchantments; }
     public MainMenuConfig getMainMenuConfig() { return mainMenu; }
     public EnchantItemTemplate getEnchantTemplate() { return enchantTemplate; }
+    public boolean getEnchantmentSlotsIntegration() { return enchantmentSlotsIntegration; }
 
     public LevelMenuConfig getLevelMenuConfig() { return levelMenu; }
     public ConfirmMenuConfig getConfirmMenuConfig() { return confirmMenu; }

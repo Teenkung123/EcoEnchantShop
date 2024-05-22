@@ -1,7 +1,6 @@
 Options:
-  Integration:
-    EcoEnchants: false
-    AdvancedEnchants: false
+  Integrations:
+    EnchantmentSlots: false
 
 Menu:
   Main:

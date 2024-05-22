@@ -1,11 +1,8 @@
 package com.teenkung.ecoenchantshop.GUI;
 
-import cn.superiormc.enchantmentslots.EnchantmentSlots;
 import cn.superiormc.enchantmentslots.configs.ConfigReader;
 import cn.superiormc.enchantmentslots.hooks.CheckValidHook;
 import cn.superiormc.enchantmentslots.methods.ItemLimits;
-import cn.superiormc.enchantmentslots.methods.ItemModify;
-import cn.superiormc.enchantmentslots.utils.ItemUtil;
 import com.teenkung.ecoenchantshop.EcoEnchantShop;
 import com.teenkung.ecoenchantshop.GUI.Wrapper.MainGUIWrapper;
 import com.teenkung.ecoenchantshop.Loader.EnchantItemTemplate;
@@ -81,10 +78,27 @@ public class MainGUI {
 
         int ench = page*config.getEnchantmentSlots().size();
         if (search != null) {
-            String string = CheckValidHook.checkValid(search);
-            int n = ConfigReader.getDefaultLimits(player, string);
-            int n2 = ItemLimits.getMaxEnchantments(search, n, string);
-            if (1 + search.getEnchantments().size() <= n2) {
+            if (plugin.getConfigLoader().getEnchantmentSlotsIntegration()) {
+                String string = CheckValidHook.checkValid(search);
+                int n = ConfigReader.getDefaultLimits(player, string);
+                int n2 = ItemLimits.getMaxEnchantments(search, n, string);
+                if (1 + search.getEnchantments().size() <= n2) {
+                    ArrayList<EcoEnchant> usable = new ArrayList<>();
+                    for (EcoEnchant enchant : plugin.getEnchantmentPrice().getAvailableEnchantments()) {
+                        if (enchant.canEnchantItem(search) && !search.getEnchantments().containsKey(enchant.getEnchantment())) {
+                            usable.add(enchant);
+                        }
+                    }
+                    for (int i = 1; i <= config.getEnchantmentSlots().size(); i++) {
+                        try {
+                            inv.setItem(config.getEnchantmentSlots().get(i - 1), createItem(player, usable.get(ench)));
+                            ench++;
+                        } catch (IndexOutOfBoundsException ignored) {
+                            break;
+                        }
+                    }
+                }
+            } else {
                 ArrayList<EcoEnchant> usable = new ArrayList<>();
                 for (EcoEnchant enchant : plugin.getEnchantmentPrice().getAvailableEnchantments()) {
                     if (enchant.canEnchantItem(search) && !search.getEnchantments().containsKey(enchant.getEnchantment())) {
